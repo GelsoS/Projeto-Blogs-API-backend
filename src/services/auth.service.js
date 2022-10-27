@@ -5,8 +5,8 @@ const { User } = require('../models');
 
 const validateBody = (params) => {
     const schema = Joi.object({
-        email: Joi.string().email().required(), // .message({    message: 'Some required fields are missing'}),
-        password: Joi.string().required(), // .message({ message: 'Some required fields are missing'}),
+        email: Joi.string().email().required(), 
+        password: Joi.string().required(), 
     });
 
     const { error, value } = schema.validate(params);
@@ -20,11 +20,9 @@ const validateLogin = async ({ email, password }) => {
         return { status: 400, message: 'Invalid fields' };
     }
     const { password: _, ...userWithoutPassword } = user.dataValues;
-    console.log(userWithoutPassword);
 
     const token = jwtUtil.createToken(userWithoutPassword);
-    console.log(token);
-    return token;
+    return { status: 200, message: { token } };
 };
 
 const validateToken = (token) => {
