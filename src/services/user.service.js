@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const validaCadastro = (body) => {
-    const { displayName, email, password } = body;
+    const { displayName } = body;
     const usr = Joi.object({
         displayName: Joi.string().min(8).required().messages({
             message: '"displayName" length must be at least 8 characters long',
