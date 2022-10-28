@@ -12,11 +12,9 @@ const createToken = (data) => {
 const validateToken = (token) => {
     try {
         const { data } = jwt.verify(token, 'secretJWT');
-        return data;
+        return { status: undefined, message: data };
     } catch (error) {
-        const e = new Error('token invalido');
-        e.name = 'nao valido';
-        throw e;
+        return { status: 401, message: 'Expired or invalid token' };
     }
 };
 

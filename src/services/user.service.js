@@ -17,11 +17,23 @@ const validaCadastro = (body) => {
 
 const validaEmail = async ({ displayName, email, password, image }) => {
     const user = await User.findOne({ where: { email } });
-    console.log('user---> ', user);
     if (user) return { status: 409, message: { message: 'User already registered' } };
     await User.create({ displayName, email, password, image });
     const toke = jwtUtil.createToken({ displayName, email, password, image });
     return { status: 201, message: { token: toke } };
 };
 
-module.exports = { validaCadastro, validaEmail };
+const getUser = async () => {
+    const usr = await User.findAll({ attributes: { exclude: ['password'] } });
+    return usr;
+};
+
+const validateToken = (token) => {
+    if (!token) {
+        return { status: 401, message: 'Token not found' };
+    }
+
+    const user = jwtUtil.validateToken(token);
+    return user;
+};
+module.exports = { validaCadastro, validaEmail, getUser, validateToken };
