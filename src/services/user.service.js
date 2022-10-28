@@ -32,8 +32,14 @@ const validateToken = (token) => {
     if (!token) {
         return { status: 401, message: 'Token not found' };
     }
-
     const user = jwtUtil.validateToken(token);
     return user;
 };
-module.exports = { validaCadastro, validaEmail, getUser, validateToken };
+
+const getById = async (id) => {
+    const usr = await User.findByPk(id, { attributes: { exclude: ['password'] } });
+    if (!usr) return { status: 404, message: 'User does not exist' };
+    return usr;
+};
+
+module.exports = { validaCadastro, validaEmail, getUser, validateToken, getById };

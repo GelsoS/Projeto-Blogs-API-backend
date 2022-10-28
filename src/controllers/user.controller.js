@@ -15,4 +15,13 @@ const getUser = async (req, res) => {
     const resp = await userService.getUser();
     res.status(200).json(resp);
 };
-module.exports = { createUser, getUser };
+
+const getById = async (req, res) => {
+    const { params: { id }, headers: { authorization } } = req;
+    const { status, message } = userService.validateToken(authorization);
+    if (status) return res.status(status).json({ message });
+    const response = await userService.getById(id);
+    if (response.status) return res.status(response.status).json(response);
+    res.status(200).json(response);
+};
+module.exports = { createUser, getUser, getById };
