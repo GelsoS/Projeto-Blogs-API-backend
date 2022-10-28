@@ -9,4 +9,13 @@ const createCategory = async (req, res) => {
     res.status(result.status).json(result.message);
 };
 
-module.exports = { createCategory };
+const getCategory = async (req, res) => {
+    const { authorization } = req.headers;
+    const { status, message } = userService.validateToken(authorization);
+    if (status) return res.status(status).json({ message });
+
+    const result = await categoryService.getCategory();
+    res.status(200).json(result);
+};
+
+module.exports = { createCategory, getCategory };

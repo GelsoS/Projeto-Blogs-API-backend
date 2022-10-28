@@ -11,4 +11,9 @@ const create = async (body) => {
    return { message: result, status: 201 };
 };
 
-module.exports = { create };
+const getCategory = async () => {
+    const categorys = await Category.findAll();
+    return categorys;
+};
+
+module.exports = { create, getCategory };
