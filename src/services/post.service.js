@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { Category, BlogPost, PostCategory } = require('../models');
+const { Category, BlogPost, PostCategory, User } = require('../models');
 
 const add = async ({ title, content, categoryIds }) => {
     const rs = Joi.object({
@@ -30,4 +30,12 @@ const getById = async ({ categoryIds }) => {
     }
 };
 
-module.exports = { add, getById };
+const getAll = async () => {
+    const retorno = await BlogPost.findAll({ include: [
+        { model: User, as: 'user', attributes: { exclude: ['password'] } },
+        { model: Category, as: 'categories' },
+    ] });
+    return retorno;
+};
+
+module.exports = { add, getById, getAll };

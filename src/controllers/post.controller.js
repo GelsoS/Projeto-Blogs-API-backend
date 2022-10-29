@@ -13,4 +13,13 @@ const addPost = async (req, res) => {
     res.status(status).json(message);
 };
 
-module.exports = { addPost };
+const get = async (req, res) => {
+    const { authorization } = req.headers;
+    const retorno = userService.validateToken(authorization);
+    if (retorno.status) return res.status(retorno.status).json({ message: retorno.message });
+
+    const tr = await postService.getAll();
+    res.status(200).json(tr);
+};
+
+module.exports = { addPost, get };
