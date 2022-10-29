@@ -21,14 +21,16 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: {
           model: 'users',
-          Key: 'id'
+          Key: 'user_id'
         }
       },
       published: {
         type: Sequelize.DATE,
+        allowNull: false,
       },
       updated: {
         type: Sequelize.DATE,
+        allowNull: false,
       }
     });
   },
