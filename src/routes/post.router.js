@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post('/', postController.addPost);
 router.get('/', postController.get);
+router.get('/:id', postController.getId);
 
 module.exports = router;

@@ -31,11 +31,28 @@ const getById = async ({ categoryIds }) => {
 };
 
 const getAll = async () => {
-    const retorno = await BlogPost.findAll({ include: [
-        { model: User, as: 'user', attributes: { exclude: ['password'] } },
-        { model: Category, as: 'categories' },
-    ] });
+    const retorno = await BlogPost.findAll({
+        include: [
+            { model: User, as: 'user', attributes: { exclude: ['password'] } },
+            { model: Category, as: 'categories' },
+        ],
+    });
     return retorno;
 };
 
-module.exports = { add, getById, getAll };
+const getId = async (id) => {
+    const result = await BlogPost.findOne(
+        {
+            where: { id },
+            include: [
+                { model: User, as: 'user', attributes: { exclude: ['password'] } },
+                { model: Category, as: 'categories' },
+            ],
+        },
+    );
+    // const usr = await User.findByPk(id, { attributes: { exclude: ['password'] } });
+    if (!result) return { status: 404, message: { message: 'Post does not exist' } };
+    return { status: 200, message: result };
+};
+
+module.exports = { add, getById, getAll, getId };

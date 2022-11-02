@@ -22,4 +22,14 @@ const get = async (req, res) => {
     res.status(200).json(tr);
 };
 
-module.exports = { addPost, get };
+const getId = async (req, res) => {
+    const { authorization } = req.headers;
+    const { id } = req.params;
+    const retorno = userService.validateToken(authorization);
+    if (retorno.status) return res.status(retorno.status).json({ message: retorno.message });
+
+    const { status, message } = await postService.getId(id);
+    res.status(status).json(message);
+};
+
+module.exports = { addPost, get, getId };
