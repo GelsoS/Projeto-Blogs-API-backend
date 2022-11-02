@@ -32,4 +32,14 @@ const getId = async (req, res) => {
     res.status(status).json(message);
 };
 
-module.exports = { addPost, get, getId };
+const putId = async (req, res) => {
+    const { id } = req.params;
+    const { authorization } = req.headers;
+    const retorno = userService.validateToken(authorization);
+    if (retorno.status) return res.status(retorno.status).json({ message: retorno.message });
+
+    const e = await postService.putId(id, req);
+    res.status(e.status).json(e.message);
+};
+
+module.exports = { addPost, get, getId, putId };

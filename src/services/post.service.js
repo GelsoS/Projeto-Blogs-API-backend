@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const { Category, BlogPost, PostCategory, User } = require('../models');
+const userService = require('./user.service');
 
 const add = async ({ title, content, categoryIds }) => {
     const rs = Joi.object({
@@ -46,7 +47,7 @@ const getId = async (id) => {
             where: { id },
             include: [
                 { model: User, as: 'user', attributes: { exclude: ['password'] } },
-                { model: Category, as: 'categories' },
+                { model: Category, as: 'categories', through: { attributes: [] } },
             ],
         },
     );
@@ -55,4 +56,21 @@ const getId = async (id) => {
     return { status: 200, message: result };
 };
 
-module.exports = { add, getById, getAll, getId };
+const putId = async (id, req) => {
+    const rs = Joi.object({
+        title: Joi.string().required(),
+        content: Joi.string().required(),
+    });
+    const r = rs.validate(req.body);
+    const { error } = r;
+    if (error) return { status: 400, message: { message: 'Some required fields are missing' } };
+
+    const usr = await User.findOne({ where: { id } });
+    const { message: { email } } = userService.validateToken(req.headers.authorization);
+
+    if (usr.email !== email) return { status: 401, message: { message: 'Unauthorized user' } };
+    await BlogPost.update(req.body, { where: { id } });
+    return getId(id);
+};
+
+module.exports = { add, getById, getAll, getId, putId };
