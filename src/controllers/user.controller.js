@@ -24,4 +24,14 @@ const getById = async (req, res) => {
     if (response.status) return res.status(response.status).json(response);
     res.status(200).json(response);
 };
-module.exports = { createUser, getUser, getById };
+
+const delMe = async (req, res) => {
+    const { headers: { authorization } } = req;
+    const { status, message } = userService.validateToken(authorization);
+    if (status) return res.status(status).json({ message });
+
+    await userService.delMe(message.id);
+    res.status(204).json();
+};
+
+module.exports = { createUser, getUser, getById, delMe };

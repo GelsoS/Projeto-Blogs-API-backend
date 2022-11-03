@@ -42,4 +42,8 @@ const getById = async (id) => {
     return usr;
 };
 
-module.exports = { validaCadastro, validaEmail, getUser, validateToken, getById };
+const delMe = async (id) => {
+    await User.destroy({ where: { id } });
+};
+
+module.exports = { validaCadastro, validaEmail, getUser, validateToken, getById, delMe };
