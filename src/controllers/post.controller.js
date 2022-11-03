@@ -52,4 +52,15 @@ const deleteId = async (req, res) => {
      res.status(e.status).json(e.message);
 };
 
-module.exports = { addPost, get, getId, putId, deleteId };
+const search = async (req, res) => {
+    const { authorization } = req.headers;
+    const retorno = userService.validateToken(authorization);
+    if (retorno.status) return res.status(retorno.status).json({ message: retorno.message });
+    
+    const { q } = req.query;
+    const result = await postService.search(q);
+    
+    res.status(200).json(result);
+};
+
+module.exports = { addPost, get, getId, putId, deleteId, search };

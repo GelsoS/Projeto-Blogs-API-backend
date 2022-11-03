@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { Op } = require('sequelize');
 const { Category, BlogPost, PostCategory, User } = require('../models');
 const userService = require('./user.service');
 
@@ -89,4 +90,24 @@ const del = async (req) => {
     return { status: 204, message: '' };
 };
 
-module.exports = { add, getById, getAll, getId, putId, del };
+const search = async (query) => {
+    const result = await BlogPost.findAll(
+        {
+            where: {
+                [Op.or]: [
+                    { title: { [Op.like]: `${query}%` } },
+                    { content: { [Op.like]: `${query}%` } },
+                ],
+            },
+            include: [
+                { model: User, as: 'user', attributes: { exclude: ['password'] } },
+                { model: Category, as: 'categories', through: { attributes: [] } },
+            ],
+
+        },
+    );
+
+    return result;
+};
+
+module.exports = { add, getById, getAll, getId, putId, del, search };
