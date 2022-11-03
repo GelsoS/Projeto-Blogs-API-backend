@@ -2,7 +2,7 @@ const Joi = require('joi');
 const { Category, BlogPost, PostCategory, User } = require('../models');
 const userService = require('./user.service');
 
-const add = async ({ title, content, categoryIds }) => {
+const add = async (id, { title, content, categoryIds }) => {
     const rs = Joi.object({
         title: Joi.string().required(),
         content: Joi.string().required(),
@@ -14,7 +14,7 @@ const add = async ({ title, content, categoryIds }) => {
     if (error) return { status: 400, message: { message: 'Some required fields are missing' } };
 
     const ret = await BlogPost.create({
-        title, content, userId: 1, updated: new Date(), published: new Date(),
+        title, content, userId: id, updated: new Date(), published: new Date(),
     });
     const r = await categoryIds.map((a) => PostCategory.create({ postId: ret.id, categoryId: a }));
     await Promise.all(r);
@@ -73,4 +73,20 @@ const putId = async (id, req) => {
     return getId(id);
 };
 
-module.exports = { add, getById, getAll, getId, putId };
+const del = async (req) => {
+    const { id } = req.params;
+    const { message: { email } } = userService.validateToken(req.headers.authorization);
+
+    const r = await BlogPost.findByPk(id);
+    if (!r) return { status: 404, message: { message: 'Post does not exist' } };
+
+    const { dataValues } = await User.findOne({ where: { email } });
+    if (dataValues.id !== r.dataValues.userId) {
+        return { status: 401, message: { message: 'Unauthorized user' } };
+    }
+
+    await BlogPost.destroy({ where: { id }, force: true });
+    return { status: 204, message: '' };
+};
+
+module.exports = { add, getById, getAll, getId, putId, del };

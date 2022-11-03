@@ -2,6 +2,7 @@ const postService = require('../services/post.service');
 const userService = require('../services/user.service');
 
 const addPost = async (req, res) => {
+    // requisito 12
     const { authorization } = req.headers;
     const retorno = userService.validateToken(authorization);
     if (retorno.status) return res.status(retorno.status).json({ message: retorno.message });
@@ -9,10 +10,10 @@ const addPost = async (req, res) => {
     const ret = await postService.getById(req.body);
     if (ret) return res.status(ret.status).json({ message: ret.message });
     
-    const { status, message } = await postService.add(req.body);
+    const { status, message } = await postService.add(retorno.message.id, req.body);
     res.status(status).json(message);
 };
-
+ 
 const get = async (req, res) => {
     const { authorization } = req.headers;
     const retorno = userService.validateToken(authorization);
@@ -42,4 +43,13 @@ const putId = async (req, res) => {
     res.status(e.status).json(e.message);
 };
 
-module.exports = { addPost, get, getId, putId };
+const deleteId = async (req, res) => {
+    const { authorization } = req.headers;
+    const retorno = userService.validateToken(authorization);
+    if (retorno.status) return res.status(retorno.status).json({ message: retorno.message });
+
+    const e = await postService.del(req);
+     res.status(e.status).json(e.message);
+};
+
+module.exports = { addPost, get, getId, putId, deleteId };

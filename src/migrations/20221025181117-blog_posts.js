@@ -22,7 +22,10 @@ module.exports = {
         references: {
           model: 'users',
           Key: 'user_id'
-        }
+        },
+        primaryKey:true,
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       published: {
         type: Sequelize.DATE,
@@ -32,6 +35,7 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
       }
+     
     });
   },
 
