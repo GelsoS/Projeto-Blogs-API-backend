@@ -11,6 +11,6 @@ Neste projeto foi desenvolvido uma API e um banco de dados para a produção de 
 
 Para fazer um post é necessário usuário e login, portanto foi trabalhado a relação entre user e post;
 
-foinecessária a utilização de categorias para os posts, trabalhando, assim, a relação de posts para categories e de categories para posts.
-
+foi necessária a utilização de categorias para os posts, trabalhando, assim, a relação de posts para categories e de categories para posts.
+foi utilizado framework sequelize
 
